@@ -1,0 +1,42 @@
+# pubspec.yaml
+
+name: daily_tracker_app
+description: A comprehensive daily tracker, meal, fitness, and focus app.
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+# ====================================================================
+# ONLY ONE 'dependencies:' SECTION IS ALLOWED!
+# ====================================================================
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # Local Database
+  sqflite: ^2.3.0       # SQLite database access
+  path: ^1.8.3          # Utility package for path manipulation
+
+  # State Management (Using Riverpod)
+  flutter_riverpod: ^2.4.9 
+  
+  # For Data Visualization (Charts)
+  fl_chart: ^0.65.0     # Highly customizable Flutter chart library
+
+  # For Date and Time Formatting (Used in Dashboard)
+  intl: ^0.18.1         # Date and time formatting
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0 # Standard Flutter lints
+
+flutter:
+  uses-material-design: true
+  # NOTE: We are intentionally excluding build_runner and riverpod_generator 
+  # because we switched to the simpler, non-generated StateNotifier (Plan B) 
+  # due to previous execution errors.
