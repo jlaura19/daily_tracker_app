@@ -1,5 +1,4 @@
 // lib/models/checklist_model.dart
-import 'package:daily_tracker_app/models/tracker_type.dart';
 
 // Represents a repeatable daily task the user tracks
 class DailyChecklistItem {

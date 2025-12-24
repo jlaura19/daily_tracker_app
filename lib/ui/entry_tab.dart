@@ -1,5 +1,3 @@
-// lib/ui/entry_tab.dart
-
 import 'package:daily_tracker_app/models/tracker_type.dart';
 import 'package:daily_tracker_app/models/tracking_entry.dart';
 import 'package:daily_tracker_app/state/tracker_notifier.dart'; 
@@ -28,10 +26,8 @@ class _EntryTabState extends ConsumerState<EntryTab> {
         type: _selectedType,
         name: _nameController.text.trim(),
         value: int.tryParse(_valueController.text.trim()),
-        notes: _notesController.text.trim().isNotEmpty 
-               ? _notesController.text.trim() 
-               : null,
-        isCompleted: false, // Default to not completed
+        notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
+        isCompleted: false, // Logged now, so assumed completed
       );
 
       ref.read(trackerNotifierProvider.notifier).addEntry(newEntry);
@@ -66,13 +62,10 @@ class _EntryTabState extends ConsumerState<EntryTab> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const Text(
-              "What did you do?",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF333333)),
-            ),
+            const Text("What did you do?", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF333333))),
             const SizedBox(height: 20),
             
-            // --- 1. Colorful Category Grid (The new look) ---
+            // Colorful Category Grid
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -94,29 +87,18 @@ class _EntryTabState extends ConsumerState<EntryTab> {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
                     decoration: BoxDecoration(
-                      color: isSelected ? color : color.withOpacity(0.1),
+                      color: isSelected ? color : color.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: isSelected ? color : color.withOpacity(0.3),
-                        width: 2,
-                      ),
+                      border: Border.all(color: isSelected ? color : color.withValues(alpha: 0.3), width: 2),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          _getIconForType(type),
-                          color: isSelected ? Colors.white : color,
-                          size: 20,
-                        ),
+                        Icon(_getIconForType(type), color: isSelected ? Colors.white : color, size: 20),
                         const SizedBox(width: 8),
                         Text(
                           type.displayName,
-                          style: TextStyle(
-                            color: isSelected ? Colors.white : color,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
+                          style: TextStyle(color: isSelected ? Colors.white : color, fontWeight: FontWeight.bold, fontSize: 14),
                         ),
                       ],
                     ),
@@ -126,34 +108,20 @@ class _EntryTabState extends ConsumerState<EntryTab> {
             ),
             const SizedBox(height: 30),
 
-            // --- 2. Input Fields (Soft Style) ---
+            // Input Fields (Soft Style)
             _buildLabel("Name / Title"),
-            _buildTextField(
-              controller: _nameController,
-              hint: "e.g., Healthy Salad",
-              icon: Icons.edit,
-            ),
+            _buildTextField(controller: _nameController, hint: "e.g., Healthy Salad", icon: Icons.edit),
             const SizedBox(height: 20),
 
             _buildLabel("Value (Optional)"),
-            _buildTextField(
-              controller: _valueController,
-              hint: "e.g., 500 (calories) or 30 (mins)",
-              icon: Icons.numbers,
-              isNumber: true,
-            ),
+            _buildTextField(controller: _valueController, hint: "e.g., 500 (calories) or 30 (mins)", icon: Icons.numbers, isNumber: true),
             const SizedBox(height: 20),
             
             _buildLabel("Notes (Optional)"),
-            _buildTextField(
-              controller: _notesController,
-              hint: "Add details...",
-              icon: Icons.sticky_note_2,
-              maxLines: 3,
-            ),
+            _buildTextField(controller: _notesController, hint: "Add details...", icon: Icons.sticky_note_2, maxLines: 3),
             const SizedBox(height: 40),
 
-            // --- 3. Big Action Button ---
+            // Big Action Button
             SizedBox(
               width: double.infinity,
               height: 55,
@@ -165,10 +133,7 @@ class _EntryTabState extends ConsumerState<EntryTab> {
                   elevation: 4,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 ),
-                child: const Text(
-                  'LOG ENTRY',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+                child: const Text('LOG ENTRY', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ),
             ),
           ],
@@ -177,55 +142,8 @@ class _EntryTabState extends ConsumerState<EntryTab> {
     );
   }
   
-  Widget _buildLabel(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0, left: 4.0),
-      child: Text(
-        text,
-        style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.grey),
-      ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller, 
-    required String hint, 
-    required IconData icon,
-    bool isNumber = false,
-    int maxLines = 1,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.05),
-            spreadRadius: 2,
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: TextFormField(
-        controller: controller,
-        keyboardType: isNumber ? TextInputType.number : TextInputType.text,
-        maxLines: maxLines,
-        validator: (value) {
-          if (!isNumber && maxLines == 1 && (value == null || value.isEmpty)) {
-            return 'This field is required';
-          }
-          return null;
-        },
-        decoration: InputDecoration(
-          hintText: hint,
-          prefixIcon: Icon(icon, color: Colors.grey[400]),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        ),
-      ),
-    );
-  }
+  Widget _buildLabel(String text) { /* ... implementation ... */ return Padding(padding: const EdgeInsets.only(bottom: 8.0, left: 4.0), child: Text(text, style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.grey)));}
+  Widget _buildTextField({required TextEditingController controller, required String hint, required IconData icon, bool isNumber = false, int maxLines = 1,}) { /* ... implementation ... */ return Container(decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), boxShadow: [BoxShadow(color: Colors.grey.withValues(alpha: 0.05), spreadRadius: 2, blurRadius: 10, offset: const Offset(0, 4),)]), child: TextFormField(controller: controller, keyboardType: isNumber ? TextInputType.number : TextInputType.text, maxLines: maxLines, validator: (value) {if (!isNumber && maxLines == 1 && (value == null || value.isEmpty)) {return 'This field is required';}return null;}, decoration: InputDecoration(hintText: hint, prefixIcon: Icon(icon, color: Colors.grey[400]), border: InputBorder.none, contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16))));}
 
   Color _getColorForType(TrackerType type) {
     switch (type) {

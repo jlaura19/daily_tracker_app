@@ -31,18 +31,21 @@ class DatabaseHelper {
     );
   }
 
-  // SQL to create the tables
+  // SQL to create ALL tables
   Future _onCreate(Database db, int version) async {
-    // 1. Tracking Entries Table (Updated with isCompleted)
+    // 1. Tracking Entries Table (Updated for Schedule features)
     await db.execute('''
       CREATE TABLE tracking_entries (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         date INTEGER,
+        endTime INTEGER,
         type TEXT,
         name TEXT,
         notes TEXT,
         value INTEGER,
-        isCompleted INTEGER DEFAULT 0 
+        isCompleted INTEGER DEFAULT 0,
+        isReminderOn INTEGER DEFAULT 0,
+        repeat TEXT
       )
     ''');
     
@@ -101,7 +104,7 @@ class DatabaseHelper {
     return List.generate(maps.length, (i) => TrackingEntry.fromMap(maps[i]));
   }
 
-  // NEW: Toggle completion for Schedule Screen
+  // Toggle completion for Schedule Screen checkboxes
   Future<void> toggleEntryCompletion(int id, bool currentStatus) async {
     final db = await database;
     await db.rawUpdate(
@@ -110,6 +113,7 @@ class DatabaseHelper {
     );
   }
   
+  // For the Consistency Chart
   Future<List<Map<String, dynamic>>> getSummaryByDateRange(DateTime startDate, DateTime endDate) async {
     final db = await database;
     final startMs = startDate.millisecondsSinceEpoch;
@@ -152,6 +156,7 @@ class DatabaseHelper {
       return List.generate(maps.length, (i) => ChecklistHistory.fromMap(maps[i]));
   }
 
+  // Get full history for the Reports Heatmap
   Future<List<ChecklistHistory>> getAllChecklistHistory() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query('checklist_history');

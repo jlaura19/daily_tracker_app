@@ -30,7 +30,7 @@ class HabitHeatmap extends StatelessWidget {
           height: 12,
           decoration: BoxDecoration(
             // Filled color if completed, faint color if not
-            color: isCompleted ? color : color.withOpacity(0.15),
+            color: isCompleted ? color : color.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(2),
           ),
         );

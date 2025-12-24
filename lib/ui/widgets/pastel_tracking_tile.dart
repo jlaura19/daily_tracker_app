@@ -26,7 +26,7 @@ class PastelTrackingTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.05),
+            color: Colors.grey.withValues(alpha: 0.05),
             spreadRadius: 2,
             blurRadius: 8,
             offset: const Offset(0, 2),
@@ -41,7 +41,7 @@ class PastelTrackingTile extends StatelessWidget {
             Container(
               width: 70,
               height: 80, // Fixed height for consistency
-              color: themeColor.withOpacity(0.2),
+              color: themeColor.withValues(alpha: 0.2),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -52,7 +52,7 @@ class PastelTrackingTile extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 10, 
                       fontWeight: FontWeight.bold,
-                      color: themeColor.withOpacity(0.8),
+                      color: themeColor.withValues(alpha: 0.8),
                     ),
                   )
                 ],
@@ -73,7 +73,7 @@ class PastelTrackingTile extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
-                            color: themeColor.withOpacity(0.1),
+                            color: themeColor.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(

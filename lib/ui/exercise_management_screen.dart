@@ -87,7 +87,7 @@ void showAddExerciseDialog(BuildContext context, WidgetRef ref, [Exercise? exerc
   final isEditing = exerciseToEdit != null;
   final nameController = TextEditingController(text: exerciseToEdit?.name);
   final durationController = TextEditingController(
-      text: isEditing ? exerciseToEdit!.defaultDurationSeconds.toString() : '');
+      text: isEditing ? exerciseToEdit.defaultDurationSeconds.toString() : '');
   final formKey = GlobalKey<FormState>();
 
   showDialog(

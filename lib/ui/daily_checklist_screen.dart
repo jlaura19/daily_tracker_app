@@ -59,14 +59,14 @@ class DailyChecklistScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Daily Habits'),
         // Use secondary color for the habit screen accent
-        backgroundColor: Theme.of(context).colorScheme.background,
-        foregroundColor: Theme.of(context).colorScheme.onBackground,
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        foregroundColor: Theme.of(context).colorScheme.onSurface,
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () => Navigator.of(context).push(MaterialPageRoute(
               // FIX: Removed 'const' keyword and fixed the missing import (now at the top)
-              builder: (context) => ChecklistManagementScreen(), 
+              builder: (context) => const ChecklistManagementScreen(), 
             )),
           ),
         ],

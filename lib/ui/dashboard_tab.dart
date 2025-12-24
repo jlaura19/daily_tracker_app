@@ -1,6 +1,5 @@
 // lib/ui/dashboard_tab.dart
 
-import 'package:daily_tracker_app/models/tracking_entry.dart';
 import 'package:daily_tracker_app/state/tracker_notifier.dart'; 
 import 'package:daily_tracker_app/ui/widgets/consistency_bar_chart.dart';
 import 'package:daily_tracker_app/ui/exercise_management_screen.dart';
@@ -10,6 +9,7 @@ import 'package:daily_tracker_app/ui/reports_screen.dart';
 import 'package:daily_tracker_app/ui/focus_setup_screen.dart'; // <--- NEW IMPORT
 import 'package:daily_tracker_app/ui/widgets/pastel_tracking_tile.dart'; 
 import 'package:flutter/material.dart';
+import 'package:daily_tracker_app/state/step_notifier.dart'; // <--- ADD THIS
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DashboardTab extends ConsumerWidget {
@@ -29,8 +29,10 @@ class DashboardTab extends ConsumerWidget {
             children: [
               // --- 1. Daily Habits Summary ---
               const ChecklistStatusCard(),
+              // --- 2. Health Steps (NEW)
+              const HealthStepsCard(),
               
-              // --- 2. Action Buttons (2x2 Grid) ---
+              // --- 3. Action Buttons (2x2 Grid) ---
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
@@ -189,7 +191,7 @@ class _ActionCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
+          color: color.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
@@ -234,7 +236,7 @@ class ChecklistStatusCard extends ConsumerWidget {
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -286,6 +288,83 @@ class ChecklistStatusCard extends ConsumerWidget {
           ),
         );
       },
+    );
+  }
+}
+
+
+class HealthStepsCard extends ConsumerWidget {
+  const HealthStepsCard({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final stepData = ref.watch(stepProvider);
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      padding: const EdgeInsets.all(20.0),
+      decoration: BoxDecoration(
+        // Teal/Mint color like the screenshot
+        color: const Color(0xFF4DB6AC), 
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF4DB6AC).withValues(alpha: 0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.directions_walk, color: Colors.white, size: 28),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Steps Today', 
+                  style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 14)
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  stepData.isError ? "Unavailable" : '${stepData.steps}',
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 28),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  stepData.status, // Walking or Stopped
+                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                ),
+              ],
+            ),
+          ),
+          // Circular Progress (Target: 10,000 steps)
+          if (!stepData.isError)
+            SizedBox(
+              width: 50,
+              height: 50,
+              child: Stack(
+                children: [
+                  CircularProgressIndicator(
+                    value: (stepData.steps / 10000).clamp(0.0, 1.0),
+                    backgroundColor: Colors.white24,
+                    color: Colors.white,
+                    strokeWidth: 5,
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

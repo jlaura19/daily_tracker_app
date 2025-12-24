@@ -1,5 +1,4 @@
 // lib/models/exercise_models.dart
-import 'package:daily_tracker_app/models/tracker_type.dart';
 
 // Represents an individual exercise within a workout plan
 class Exercise {

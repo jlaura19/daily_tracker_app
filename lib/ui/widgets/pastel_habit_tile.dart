@@ -30,10 +30,10 @@ class PastelHabitTile extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.15), // Light background color
+            color: color.withValues(alpha: 0.15), // Light background color
             borderRadius: BorderRadius.circular(15),
             border: Border.all(
-              color: color.withOpacity(0.4), // Slightly darker border
+              color: color.withValues(alpha: 0.4), // Slightly darker border
               width: 1.0,
             ),
           ),

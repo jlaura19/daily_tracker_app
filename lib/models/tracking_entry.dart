@@ -4,68 +4,82 @@ import 'tracker_type.dart';
 
 class TrackingEntry {
   final int? id;
-  final DateTime date;
+  final DateTime date; // Acts as Start Time
+  final int? endTime;  // NEW: End Time (milliseconds since epoch)
   final TrackerType type;
   final String name;
   final String? notes;
   final int? value;
-  final bool isCompleted; // <--- NEW FIELD
+  final bool isCompleted;
+  final bool isReminderOn; // NEW
+  final String repeat;     // NEW: "Never", "Daily", etc.
 
   TrackingEntry({
     this.id,
     required this.date,
+    this.endTime,
     required this.type,
     required this.name,
     this.notes,
     this.value,
-    this.isCompleted = false, // <--- Default to false
+    this.isCompleted = false,
+    this.isReminderOn = false,
+    this.repeat = 'Never',
   });
 
-  // Convert to Map for Database (Store bool as Integer 0 or 1)
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'date': date.millisecondsSinceEpoch,
+      'endTime': endTime,
       'type': type.name,
       'name': name,
       'notes': notes,
       'value': value,
-      'isCompleted': isCompleted ? 1 : 0, // <--- Convert Bool to Int
+      'isCompleted': isCompleted ? 1 : 0,
+      'isReminderOn': isReminderOn ? 1 : 0,
+      'repeat': repeat,
     };
   }
 
-  // Convert from Database Map to Object
   factory TrackingEntry.fromMap(Map<String, dynamic> map) {
     return TrackingEntry(
       id: map['id'],
       date: DateTime.fromMillisecondsSinceEpoch(map['date']),
+      endTime: map['endTime'],
       type: TrackerType.values.byName(map['type']),
       name: map['name'],
       notes: map['notes'],
       value: map['value'],
-      // If the column is null (old data), default to false (0)
-      isCompleted: (map['isCompleted'] ?? 0) == 1, 
+      isCompleted: (map['isCompleted'] ?? 0) == 1,
+      isReminderOn: (map['isReminderOn'] ?? 0) == 1,
+      repeat: map['repeat'] ?? 'Never',
     );
   }
 
-  // Helper to clone object with updates
   TrackingEntry copyWith({
     int? id,
     DateTime? date,
+    int? endTime,
     TrackerType? type,
     String? name,
     String? notes,
     int? value,
-    bool? isCompleted, // <--- Add to copyWith
+    bool? isCompleted,
+    bool? isReminderOn,
+    String? repeat,
   }) {
     return TrackingEntry(
       id: id ?? this.id,
       date: date ?? this.date,
+      endTime: endTime ?? this.endTime,
       type: type ?? this.type,
       name: name ?? this.name,
       notes: notes ?? this.notes,
       value: value ?? this.value,
       isCompleted: isCompleted ?? this.isCompleted,
+      isReminderOn: isReminderOn ?? this.isReminderOn,
+      repeat: repeat ?? this.repeat,
     );
   }
 }

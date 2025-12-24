@@ -37,7 +37,7 @@ class ConsistencyBarChart extends ConsumerWidget {
         final List<BarChartGroupData> barGroups = [];
         
         // Use a list of types to ensure consistent order for the bars
-        final types = TrackerType.values; 
+        const types = TrackerType.values; 
 
         for (int i = 0; i < types.length; i++) {
           final type = types[i];

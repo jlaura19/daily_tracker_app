@@ -74,7 +74,7 @@ class _QuitHabitTileState extends State<QuitHabitTile> {
         // Add a subtle border or shadow
         boxShadow: [
           BoxShadow(
-             color: Colors.grey.withOpacity(0.1),
+             color: Colors.grey.withValues(alpha: 0.1),
              blurRadius: 5,
              offset: const Offset(0, 2),
           )
@@ -109,7 +109,7 @@ class _QuitHabitTileState extends State<QuitHabitTile> {
                      child: Container(
                        padding: const EdgeInsets.all(4),
                        decoration: BoxDecoration(
-                         color: Colors.white.withOpacity(0.2),
+                         color: Colors.white.withValues(alpha: 0.2),
                          shape: BoxShape.circle,
                        ),
                        child: const Icon(Icons.refresh, color: Colors.white, size: 16),
