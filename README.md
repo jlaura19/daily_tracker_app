@@ -45,7 +45,36 @@ A comprehensive Flutter application for tracking daily habits, fitness activitie
 
 ## 📱 Screenshots
 
-*Coming soon - Add your app screenshots here*
+### Schedule & Planning
+<div align="center">
+  <img src="screenshots/schedule_new_event.jpg" alt="Schedule New Event" width="250"/>
+  <p><em>Create and schedule future events with customizable reminders and repeat options</em></p>
+</div>
+
+### Habit Management
+<div align="center">
+  <img src="screenshots/all_habits_empty.jpg" alt="All Habits Screen" width="250"/>
+  <p><em>Manage all your habits in one place with easy creation and organization</em></p>
+</div>
+
+### Quit Bad Habits
+<div align="center">
+  <img src="screenshots/quit_habits.jpg" alt="Quit Habits Tracker" width="250"/>
+  <p><em>Track your progress in breaking unwanted habits with real-time counters</em></p>
+</div>
+
+### Fitness & Workouts
+<div align="center">
+  <img src="screenshots/workout_builder.jpg" alt="Workout Builder" width="250"/>
+  <p><em>Build custom workout routines with exercise management</em></p>
+</div>
+
+### Settings & Profile
+<div align="center">
+  <img src="screenshots/settings_profile.jpg" alt="Settings & Profile" width="250"/>
+  <p><em>Customize your experience with dark mode, font size, and notification preferences</em></p>
+</div>
+
 
 ## 🚀 Getting Started
 

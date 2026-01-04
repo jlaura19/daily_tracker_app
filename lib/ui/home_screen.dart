@@ -1,8 +1,8 @@
-import 'package:daily_tracker_app/ui/dashboard_tab.dart'; 
-import 'package:daily_tracker_app/ui/schedule_screen.dart'; 
-import 'package:daily_tracker_app/ui/entry_tab.dart';     
-import 'package:daily_tracker_app/ui/daily_checklist_screen.dart';
-import 'package:daily_tracker_app/ui/settings_screen.dart'; // Settings Screen
+import 'package:daily_tracker_app/ui/insights_tab.dart';
+import 'package:daily_tracker_app/ui/settings_screen.dart';
+import 'package:daily_tracker_app/ui/today_tab.dart';
+import 'package:daily_tracker_app/ui/quit_habits_screen.dart';
+import 'package:daily_tracker_app/ui/unified_habits_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -17,11 +17,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _currentIndex = 0;
 
   final List<Widget> _tabs = [
-    const DashboardTab(), 
-    const ScheduleScreen(),
-    const EntryTab(),     
-    const DailyChecklistScreen(),
-    const SettingsScreen(), // NEW TAB
+    const TodayTab(),      // Main hub
+    const InsightsTab(),   // Reports + Schedule
+    const SettingsScreen(), // Profile/Settings
   ];
 
   @override
@@ -42,11 +40,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           });
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.calendar_view_day), label: 'Schedule'),
-          BottomNavigationBarItem(icon: Icon(Icons.add_circle_outline), label: 'Log'),
-          BottomNavigationBarItem(icon: Icon(Icons.check_box), label: 'Habits'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.today),
+            label: 'Today',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.insights),
+            label: 'Insights',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
         ],
       ),
     );

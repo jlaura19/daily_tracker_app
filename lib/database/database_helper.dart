@@ -4,6 +4,10 @@ import 'package:daily_tracker_app/models/tracking_entry.dart';
 import 'package:daily_tracker_app/models/checklist_model.dart';
 import 'package:daily_tracker_app/models/exercise_models.dart';
 import 'package:daily_tracker_app/models/quit_habit.dart';
+import 'package:daily_tracker_app/models/unified_habit.dart';
+import 'package:daily_tracker_app/models/habit_completion.dart';
+import 'package:daily_tracker_app/models/streak_data.dart';
+import 'package:daily_tracker_app/models/user_stats.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -26,8 +30,9 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 1,
+      version: 2, // Incremented for new schema
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
     );
   }
 
@@ -90,6 +95,148 @@ class DatabaseHelper {
         resetCount INTEGER
       )
     ''');
+
+    // NEW: 6. Unified Habits Table
+    await db.execute('''
+      CREATE TABLE unified_habits (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        type TEXT NOT NULL,
+        category TEXT NOT NULL,
+        frequency TEXT NOT NULL,
+        target_value INTEGER,
+        unit TEXT,
+        current_streak INTEGER DEFAULT 0,
+        longest_streak INTEGER DEFAULT 0,
+        total_completions INTEGER DEFAULT 0,
+        reminder_time TEXT,
+        reminder_days TEXT,
+        reminder_enabled INTEGER DEFAULT 0,
+        icon_name TEXT,
+        color_index INTEGER,
+        sort_order INTEGER,
+        created_at INTEGER NOT NULL,
+        notes TEXT,
+        is_archived INTEGER DEFAULT 0
+      )
+    ''');
+
+    // NEW: 7. Habit Completions Table
+    await db.execute('''
+      CREATE TABLE habit_completions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        habit_id INTEGER NOT NULL,
+        completion_date INTEGER NOT NULL,
+        value INTEGER,
+        notes TEXT,
+        FOREIGN KEY(habit_id) REFERENCES unified_habits(id) ON DELETE CASCADE
+      )
+    ''');
+
+    // NEW: 8. User Stats Table
+    await db.execute('''
+      CREATE TABLE user_stats (
+        id INTEGER PRIMARY KEY,
+        total_xp INTEGER DEFAULT 0,
+        current_level INTEGER DEFAULT 1,
+        achievements TEXT,
+        last_updated INTEGER
+      )
+    ''');
+
+    // NEW: 9. Streaks Table
+    await db.execute('''
+      CREATE TABLE streaks (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        habit_id INTEGER NOT NULL,
+        start_date INTEGER NOT NULL,
+        end_date INTEGER,
+        length INTEGER NOT NULL,
+        is_active INTEGER DEFAULT 1,
+        FOREIGN KEY(habit_id) REFERENCES unified_habits(id) ON DELETE CASCADE
+      )
+    ''');
+
+    // Initialize user stats
+    await db.insert('user_stats', {
+      'id': 1,
+      'total_xp': 0,
+      'current_level': 1,
+      'achievements': '[]',
+      'last_updated': DateTime.now().millisecondsSinceEpoch,
+    });
+  }
+
+  // Migration from v1 to v2
+  Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      // Add new tables for unified habits system
+      await db.execute('''
+        CREATE TABLE unified_habits (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          type TEXT NOT NULL,
+          category TEXT NOT NULL,
+          frequency TEXT NOT NULL,
+          target_value INTEGER,
+          unit TEXT,
+          current_streak INTEGER DEFAULT 0,
+          longest_streak INTEGER DEFAULT 0,
+          total_completions INTEGER DEFAULT 0,
+          reminder_time TEXT,
+          reminder_days TEXT,
+          reminder_enabled INTEGER DEFAULT 0,
+          icon_name TEXT,
+          color_index INTEGER,
+          sort_order INTEGER,
+          created_at INTEGER NOT NULL,
+          notes TEXT,
+          is_archived INTEGER DEFAULT 0
+        )
+      ''');
+
+      await db.execute('''
+        CREATE TABLE habit_completions (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          habit_id INTEGER NOT NULL,
+          completion_date INTEGER NOT NULL,
+          value INTEGER,
+          notes TEXT,
+          FOREIGN KEY(habit_id) REFERENCES unified_habits(id) ON DELETE CASCADE
+        )
+      ''');
+
+      await db.execute('''
+        CREATE TABLE user_stats (
+          id INTEGER PRIMARY KEY,
+          total_xp INTEGER DEFAULT 0,
+          current_level INTEGER DEFAULT 1,
+          achievements TEXT,
+          last_updated INTEGER
+        )
+      ''');
+
+      await db.execute('''
+        CREATE TABLE streaks (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          habit_id INTEGER NOT NULL,
+          start_date INTEGER NOT NULL,
+          end_date INTEGER,
+          length INTEGER NOT NULL,
+          is_active INTEGER DEFAULT 1,
+          FOREIGN KEY(habit_id) REFERENCES unified_habits(id) ON DELETE CASCADE
+        )
+      ''');
+
+      // Initialize user stats
+      await db.insert('user_stats', {
+        'id': 1,
+        'total_xp': 0,
+        'current_level': 1,
+        'achievements': '[]',
+        'last_updated': DateTime.now().millisecondsSinceEpoch,
+      });
+    }
   }
 
   // --- Tracking Entry CRUD ---
@@ -200,5 +347,115 @@ class DatabaseHelper {
   Future<int> deleteQuitHabit(int id) async {
     final db = await database;
     return await db.delete('quit_habits', where: 'id = ?', whereArgs: [id]);
+  }
+
+  // --- UNIFIED HABITS CRUD ---
+  Future<int> insertUnifiedHabit(UnifiedHabit habit) async {
+    final db = await database;
+    return await db.insert('unified_habits', habit.toMap());
+  }
+
+  Future<List<UnifiedHabit>> getAllUnifiedHabits() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'unified_habits',
+      where: 'is_archived = ?',
+      whereArgs: [0],
+      orderBy: 'sort_order ASC',
+    );
+    return List.generate(maps.length, (i) => UnifiedHabit.fromMap(maps[i]));
+  }
+
+  Future<UnifiedHabit?> getUnifiedHabitById(int id) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'unified_habits',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    if (maps.isEmpty) return null;
+    return UnifiedHabit.fromMap(maps.first);
+  }
+
+  Future<int> updateUnifiedHabit(UnifiedHabit habit) async {
+    final db = await database;
+    return await db.update(
+      'unified_habits',
+      habit.toMap(),
+      where: 'id = ?',
+      whereArgs: [habit.id],
+    );
+  }
+
+  Future<int> deleteUnifiedHabit(int id) async {
+    final db = await database;
+    return await db.delete('unified_habits', where: 'id = ?', whereArgs: [id]);
+  }
+
+  // --- HABIT COMPLETIONS CRUD ---
+  Future<int> insertHabitCompletion(HabitCompletion completion) async {
+    final db = await database;
+    return await db.insert('habit_completions', completion.toMap());
+  }
+
+  Future<List<HabitCompletion>> getHabitCompletions(int habitId) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'habit_completions',
+      where: 'habit_id = ?',
+      whereArgs: [habitId],
+      orderBy: 'completion_date DESC',
+    );
+    return List.generate(maps.length, (i) => HabitCompletion.fromMap(maps[i]));
+  }
+
+  Future<List<HabitCompletion>> getTodayCompletions() async {
+    final db = await database;
+    final now = DateTime.now();
+    final startOfDay = DateTime(now.year, now.month, now.day).millisecondsSinceEpoch;
+    final endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59).millisecondsSinceEpoch;
+
+    final List<Map<String, dynamic>> maps = await db.query(
+      'habit_completions',
+      where: 'completion_date >= ? AND completion_date <= ?',
+      whereArgs: [startOfDay, endOfDay],
+    );
+    return List.generate(maps.length, (i) => HabitCompletion.fromMap(maps[i]));
+  }
+
+  Future<int> deleteHabitCompletion(int id) async {
+    final db = await database;
+    return await db.delete('habit_completions', where: 'id = ?', whereArgs: [id]);
+  }
+
+  // --- USER STATS CRUD ---
+  Future<UserStats> getUserStats() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'user_stats',
+      where: 'id = ?',
+      whereArgs: [1],
+    );
+    if (maps.isEmpty) {
+      await db.insert('user_stats', {
+        'id': 1,
+        'total_xp': 0,
+        'current_level': 1,
+        'achievements': '[]',
+        'last_updated': DateTime.now().millisecondsSinceEpoch,
+      });
+      return UserStats();
+    }
+    return UserStats.fromMap(maps.first);
+  }
+
+  Future<int> updateUserStats(UserStats stats) async {
+    final db = await database;
+    return await db.update(
+      'user_stats',
+      stats.toMap(),
+      where: 'id = ?',
+      whereArgs: [1],
+    );
   }
 }

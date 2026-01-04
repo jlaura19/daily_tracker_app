@@ -2,7 +2,7 @@
 
 import 'package:daily_tracker_app/state/tracker_notifier.dart'; 
 import 'package:daily_tracker_app/ui/widgets/consistency_bar_chart.dart';
-import 'package:daily_tracker_app/ui/exercise_management_screen.dart';
+import 'package:daily_tracker_app/ui/widgets/consistency_bar_chart.dart';
 import 'package:daily_tracker_app/ui/workout_starter_screen.dart';
 import 'package:daily_tracker_app/ui/quit_habits_screen.dart'; 
 import 'package:daily_tracker_app/ui/reports_screen.dart'; 
@@ -70,11 +70,11 @@ class DashboardTab extends ConsumerWidget {
                       children: [
                         Expanded(
                           child: _ActionCard(
-                            icon: Icons.edit_note,
+                            icon: Icons.checklist,
                             color: Colors.blueAccent,
-                            title: "Exercises",
+                            title: "Checklist",
                             onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute(builder: (_) => const ExerciseManagementScreen()),
+                              MaterialPageRoute(builder: (_) => const ChecklistStatusCard()), // Placeholder or use correct screen
                             ),
                           ),
                         ),

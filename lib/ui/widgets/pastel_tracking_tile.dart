@@ -22,11 +22,11 @@ class PastelTrackingTile extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.05),
+            color: Colors.black.withOpacity(0.05),
             spreadRadius: 2,
             blurRadius: 8,
             offset: const Offset(0, 2),
@@ -88,7 +88,7 @@ class PastelTrackingTile extends StatelessWidget {
                         // Time
                         Text(
                           timeString,
-                          style: TextStyle(color: Colors.grey[400], fontSize: 12),
+                          style: TextStyle(color: Theme.of(context).hintColor, fontSize: 12),
                         ),
                       ],
                     ),
@@ -97,10 +97,10 @@ class PastelTrackingTile extends StatelessWidget {
                     // Entry Name
                     Text(
                       entry.name,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF333333),
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -111,7 +111,7 @@ class PastelTrackingTile extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         _formatSubtitle(entry),
-                        style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                        style: TextStyle(fontSize: 13, color: Theme.of(context).textTheme.bodySmall?.color),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -141,6 +141,7 @@ class PastelTrackingTile extends StatelessWidget {
       case TrackerType.focus: return const Color(0xFF8059FF); // Purple
       case TrackerType.sports: return const Color(0xFF00BCD4);
       case TrackerType.healthcare: return const Color(0xFFE91E63);
+      case TrackerType.plan: return const Color(0xFF607D8B);
     }
   }
 
@@ -152,6 +153,7 @@ class PastelTrackingTile extends StatelessWidget {
       case TrackerType.focus: return Icons.self_improvement;
       case TrackerType.sports: return Icons.sports_soccer;
       case TrackerType.healthcare: return Icons.local_hospital;
+      case TrackerType.plan: return Icons.event_note;
     }
   }
 }

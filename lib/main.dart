@@ -1,4 +1,6 @@
 import 'package:daily_tracker_app/ui/home_screen.dart';
+import 'package:daily_tracker_app/ui/quit_habits_screen.dart';
+import 'package:daily_tracker_app/ui/unified_habits_screen.dart';
 import 'package:daily_tracker_app/services/notification_service.dart';
 import 'package:daily_tracker_app/state/settings_notifier.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +53,10 @@ class MyApp extends ConsumerWidget {
       },
 
       home: const HomeScreen(),
+      routes: {
+        '/quit_habits': (context) => const QuitHabitsScreen(),
+        '/unified_habits': (context) => const UnifiedHabitsScreen(),
+      },
     );
   }
 }

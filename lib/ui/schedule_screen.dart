@@ -25,13 +25,20 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
     });
   }
 
+  bool _isToday() {
+    final now = DateTime.now();
+    return _selectedDate.year == now.year &&
+           _selectedDate.month == now.month &&
+           _selectedDate.day == now.day;
+  }
+
   @override
   Widget build(BuildContext context) {
     final trackerState = ref.watch(trackerNotifierProvider);
     final monthYear = DateFormat('MMM yyyy').format(_selectedDate);
 
     return Scaffold(
-      backgroundColor: Colors.black, // Dark Theme Background
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor, // Dark Theme Background
       body: SafeArea(
         child: Column(
           children: [
@@ -41,20 +48,20 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
               child: Row(
                 children: [
                   Container(
-                    decoration: BoxDecoration(color: Colors.grey[900], borderRadius: BorderRadius.circular(8)),
+                    decoration: BoxDecoration(color: Theme.of(context).dividerColor.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
                     child: IconButton(
-                      icon: const Icon(Icons.view_week, color: Colors.white),
+                      icon: Icon(Icons.view_week, color: Theme.of(context).iconTheme.color),
                       onPressed: () {
                         // Logic to change view (Day, Week, etc)
                       },
                     ),
                   ),
-                  const Expanded(
+                  Expanded(
                     child: Center(
-                      child: Text("Schedule", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                      child: Text("Schedule", style: TextStyle(color: Theme.of(context).textTheme.titleLarge?.color, fontSize: 18, fontWeight: FontWeight.bold)),
                     ),
                   ),
-                  const Icon(Icons.list, color: Colors.white),
+                  Icon(Icons.list, color: Theme.of(context).iconTheme.color),
                 ],
               ),
             ),
@@ -67,26 +74,29 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
                   // Month/Year Pill
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    decoration: BoxDecoration(color: Colors.grey[900], borderRadius: BorderRadius.circular(8)),
-                    child: Text(monthYear, style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
+                    decoration: BoxDecoration(color: Theme.of(context).dividerColor.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
+                    child: Text(monthYear, style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color, fontWeight: FontWeight.bold)),
                   ),
                   const Spacer(),
                   // Nav Buttons
                   Container(
-                    decoration: BoxDecoration(color: Colors.grey[900], borderRadius: BorderRadius.circular(8)),
+                    decoration: BoxDecoration(color: Theme.of(context).dividerColor.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
                     child: Row(
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.chevron_left, color: Colors.white),
+                          icon: Icon(Icons.chevron_left, color: Theme.of(context).iconTheme.color),
                           onPressed: () => _changeDate(-1),
                         ),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          color: Colors.grey[800],
-                          child: const Text("Today", style: TextStyle(color: Colors.white)),
+                          color: Theme.of(context).dividerColor.withOpacity(0.2),
+                          child: Text(
+                            _isToday() ? "Today" : DateFormat('MMM d').format(_selectedDate), 
+                            style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color)
+                          ),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.chevron_right, color: Colors.white),
+                          icon: Icon(Icons.chevron_right, color: Theme.of(context).iconTheme.color),
                           onPressed: () => _changeDate(1),
                         ),
                       ],
@@ -130,7 +140,7 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen> {
       
       // --- FAB to Add Event ---
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.grey[800],
+        backgroundColor: Theme.of(context).colorScheme.primary,
         child: const Icon(Icons.add, color: Colors.white),
         onPressed: () {
           showModalBottomSheet(
@@ -209,7 +219,7 @@ class _DarkEventsTimeline extends StatelessWidget {
                       Expanded(
                         child: Container(
                           decoration: BoxDecoration(
-                            border: Border(top: BorderSide(color: Colors.grey[900]!, width: 1)),
+                            border: Border(top: BorderSide(color: Theme.of(context).dividerColor.withOpacity(0.1), width: 1)),
                           ),
                         ),
                       ),
@@ -240,14 +250,18 @@ class _DarkEventsTimeline extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: entry.isCompleted ? Colors.grey[850] : Colors.grey[800],
+                      color: entry.isCompleted 
+                          ? Theme.of(context).dividerColor.withOpacity(0.05) 
+                          : Theme.of(context).cardColor,
                       borderRadius: BorderRadius.circular(8),
-                      border: Border(
-                        left: BorderSide(
-                          color: _getColorForType(entry.type), 
-                          width: 4
-                        )
-                      ),
+                      border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.1)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,7 +269,9 @@ class _DarkEventsTimeline extends StatelessWidget {
                         Text(
                           entry.name,
                           style: TextStyle(
-                            color: Colors.white, 
+                            color: entry.isCompleted 
+                                ? Theme.of(context).textTheme.bodySmall?.color 
+                                : Theme.of(context).textTheme.titleSmall?.color, 
                             fontWeight: FontWeight.bold,
                             decoration: entry.isCompleted ? TextDecoration.lineThrough : null,
                           )
@@ -285,6 +301,7 @@ class _DarkEventsTimeline extends StatelessWidget {
       case TrackerType.focus: return Colors.purpleAccent;
       case TrackerType.sports: return const Color(0xFF00BCD4);
       case TrackerType.healthcare: return const Color(0xFFE91E63);
+      case TrackerType.plan: return const Color(0xFF607D8B); // Blue Grey for Plan
     }
   }
 }
@@ -301,8 +318,8 @@ class _CurrentTimeLine extends StatelessWidget {
       top: top, left: 50, right: 0,
       child: Row(
         children: [
-          const CircleAvatar(radius: 4, backgroundColor: Colors.white),
-          Expanded(child: Container(height: 1, color: Colors.white)),
+          CircleAvatar(radius: 4, backgroundColor: Theme.of(context).colorScheme.primary),
+          Expanded(child: Container(height: 1, color: Theme.of(context).colorScheme.primary.withOpacity(0.5))),
         ],
       ),
     );
@@ -336,9 +353,9 @@ class _AddEventModalState extends ConsumerState<_AddEventModal> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: const BoxDecoration(
-        color: Color(0xFF1E1E1E), // Dark Grey Background
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -347,9 +364,9 @@ class _AddEventModalState extends ConsumerState<_AddEventModal> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.close, color: Colors.white)),
-              const Text("New Event", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-              IconButton(onPressed: () {}, icon: const Icon(Icons.save_outlined, color: Colors.white)), // Placeholder icon
+              IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.close, color: Theme.of(context).iconTheme.color)),
+              Text("New Event", style: TextStyle(color: Theme.of(context).textTheme.titleLarge?.color, fontSize: 18, fontWeight: FontWeight.bold)),
+              IconButton(onPressed: () {}, icon: Icon(Icons.save_outlined, color: Theme.of(context).iconTheme.color)), // Placeholder icon
             ],
           ),
           const SizedBox(height: 20),
@@ -357,13 +374,13 @@ class _AddEventModalState extends ConsumerState<_AddEventModal> {
           // Habit Selector
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(color: Colors.grey[850], borderRadius: BorderRadius.circular(8)),
+            decoration: BoxDecoration(color: Theme.of(context).dividerColor.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<TrackerType>(
                 value: _selectedType,
-                dropdownColor: Colors.grey[850],
+                dropdownColor: Theme.of(context).cardColor,
                 isExpanded: true,
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
                 items: TrackerType.values.map((type) => DropdownMenuItem(
                   value: type,
                   child: Text(type.displayName),
@@ -376,12 +393,12 @@ class _AddEventModalState extends ConsumerState<_AddEventModal> {
           const SizedBox(height: 10),
           // Name Input
           TextField(
-            style: const TextStyle(color: Colors.white),
+            style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
             decoration: InputDecoration(
               filled: true,
-              fillColor: Colors.grey[850],
+              fillColor: Theme.of(context).dividerColor.withOpacity(0.1),
               hintText: "Enter Habit Name",
-              hintStyle: TextStyle(color: Colors.grey[500]),
+              hintStyle: TextStyle(color: Theme.of(context).hintColor),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
             ),
             onChanged: (val) => _habitName = val,
@@ -393,12 +410,10 @@ class _AddEventModalState extends ConsumerState<_AddEventModal> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text("Reminder", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+              Text("Reminder", style: TextStyle(color: Theme.of(context).textTheme.titleMedium?.color, fontSize: 16, fontWeight: FontWeight.bold)),
               Switch(
                 value: _isReminderOn,
                 onChanged: (val) => setState(() => _isReminderOn = val),
-                activeThumbColor: Colors.white,
-                activeTrackColor: Colors.purpleAccent,
               )
             ],
           ),
@@ -414,16 +429,16 @@ class _AddEventModalState extends ConsumerState<_AddEventModal> {
           // Repeat Dropdown (Visual only for now)
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(color: Colors.grey[850], borderRadius: BorderRadius.circular(8)),
+            decoration: BoxDecoration(color: Theme.of(context).dividerColor.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text("Repeats", style: TextStyle(color: Colors.white)),
+                Text("Repeats", style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color)),
                 DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
                     value: _repeats,
-                    dropdownColor: Colors.grey[850],
-                    style: const TextStyle(color: Colors.white),
+                    dropdownColor: Theme.of(context).cardColor,
+                    style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
                     items: ["Never", "Daily", "Weekly"].map((r) => DropdownMenuItem(value: r, child: Text(r))).toList(),
                     onChanged: (val) => setState(() => _repeats = val!),
                   ),
@@ -448,7 +463,10 @@ class _AddEventModalState extends ConsumerState<_AddEventModal> {
               Expanded(
                 child: ElevatedButton(
                   onPressed: _saveEvent,
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: Colors.black),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary, 
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary
+                  ),
                   child: const Text("Save"),
                 ),
               ),
@@ -473,10 +491,10 @@ class _AddEventModalState extends ConsumerState<_AddEventModal> {
             },
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(color: Colors.grey[800], borderRadius: BorderRadius.circular(8)),
+              decoration: BoxDecoration(color: Theme.of(context).dividerColor.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
               child: Text(
                 "${widget.selectedDate.day}/${widget.selectedDate.month}   ${time.format(context)}",
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: TextStyle(color: Theme.of(context).textTheme.titleSmall?.color, fontWeight: FontWeight.bold),
               ),
             ),
           )
