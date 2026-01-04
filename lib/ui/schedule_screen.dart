@@ -283,6 +283,8 @@ class _DarkEventsTimeline extends StatelessWidget {
       case TrackerType.meal: return Colors.green;
       case TrackerType.fitness: return Colors.redAccent;
       case TrackerType.focus: return Colors.purpleAccent;
+      case TrackerType.sports: return const Color(0xFF00BCD4);
+      case TrackerType.healthcare: return const Color(0xFFE91E63);
     }
   }
 }

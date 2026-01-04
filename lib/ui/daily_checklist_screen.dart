@@ -47,6 +47,61 @@ class DailyChecklistScreen extends ConsumerWidget {
     return colors[index % colors.length];
   }
 
+  // Quick add habit dialog
+  void _showQuickAddDialog(BuildContext context, WidgetRef ref) {
+    final TextEditingController nameController = TextEditingController();
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Add New Habit'),
+        content: TextField(
+          controller: nameController,
+          decoration: const InputDecoration(
+            labelText: 'Habit Name',
+            hintText: 'e.g., Drink 8 glasses of water',
+            border: OutlineInputBorder(),
+          ),
+          autofocus: true,
+          textCapitalization: TextCapitalization.sentences,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          FilledButton.icon(
+            onPressed: () async {
+              final name = nameController.text.trim();
+              if (name.isNotEmpty) {
+                // Create new habit with default icon and sort order
+                final newItem = DailyChecklistItem(
+                  taskName: name,
+                  iconName: 'check_circle',
+                  sortOrder: 0,
+                );
+                await ref.read(checklistItemProvider.notifier).addItem(newItem);
+                
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Added habit: $name'),
+                      backgroundColor: Colors.green,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
+              }
+            },
+            icon: const Icon(Icons.add),
+            label: const Text('Add'),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -112,6 +167,11 @@ class DailyChecklistScreen extends ConsumerWidget {
             },
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showQuickAddDialog(context, ref),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        child: const Icon(Icons.add),
       ),
     );
   }

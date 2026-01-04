@@ -151,6 +151,8 @@ class _EntryTabState extends ConsumerState<EntryTab> {
       case TrackerType.meal: return const Color(0xFF5AB75A);
       case TrackerType.fitness: return const Color(0xFFFF6B6B);
       case TrackerType.focus: return const Color(0xFF8059FF);
+      case TrackerType.sports: return const Color(0xFF00BCD4);
+      case TrackerType.healthcare: return const Color(0xFFE91E63);
     }
   }
 
@@ -160,6 +162,8 @@ class _EntryTabState extends ConsumerState<EntryTab> {
       case TrackerType.meal: return Icons.restaurant;
       case TrackerType.fitness: return Icons.fitness_center;
       case TrackerType.focus: return Icons.self_improvement;
+      case TrackerType.sports: return Icons.sports_soccer;
+      case TrackerType.healthcare: return Icons.local_hospital;
     }
   }
 

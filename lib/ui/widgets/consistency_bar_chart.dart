@@ -96,6 +96,8 @@ class ConsistencyBarChart extends ConsumerWidget {
       TrackerType.meal => Colors.green,
       TrackerType.fitness => Colors.red,
       TrackerType.focus => Colors.blue,
+      TrackerType.sports => const Color(0xFF00BCD4),
+      TrackerType.healthcare => const Color(0xFFE91E63),
     };
   }
   

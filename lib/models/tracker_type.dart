@@ -4,7 +4,9 @@ enum TrackerType {
   activity('Activity'),
   meal('Meal'),
   fitness('Fitness'),
-  focus('Focus');
+  focus('Focus'),
+  sports('Sports'),
+  healthcare('Healthcare');
 
   final String displayName;
   const TrackerType(this.displayName);

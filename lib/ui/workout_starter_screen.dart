@@ -12,6 +12,82 @@ final selectedWorkoutExercisesProvider = StateProvider<List<Exercise>>((ref) => 
 class WorkoutStarterScreen extends ConsumerWidget {
   const WorkoutStarterScreen({super.key});
 
+  // Quick add exercise dialog
+  void _showQuickAddExerciseDialog(BuildContext context, WidgetRef ref) {
+    final TextEditingController nameController = TextEditingController();
+    final TextEditingController durationController = TextEditingController(text: '30');
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Create New Exercise'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                labelText: 'Exercise Name',
+                hintText: 'e.g., Push-ups',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.fitness_center),
+              ),
+              autofocus: true,
+              textCapitalization: TextCapitalization.words,
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: durationController,
+              decoration: const InputDecoration(
+                labelText: 'Duration (seconds)',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.timer),
+                suffixText: 'sec',
+              ),
+              keyboardType: TextInputType.number,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          FilledButton.icon(
+            onPressed: () async {
+              final name = nameController.text.trim();
+              final durationText = durationController.text.trim();
+              final duration = int.tryParse(durationText) ?? 30;
+              
+              if (name.isNotEmpty) {
+                // Create new exercise
+                final newExercise = Exercise(
+                  name: name,
+                  defaultDurationSeconds: duration,
+                  sortOrder: 0,
+                );
+                await ref.read(exerciseNotifierProvider.notifier).addExercise(newExercise);
+                
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Created exercise: $name'),
+                      backgroundColor: Colors.green,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
+              }
+            },
+            icon: const Icon(Icons.add),
+            label: const Text('Create'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // 1. Get all available exercises
@@ -126,6 +202,12 @@ class WorkoutStarterScreen extends ConsumerWidget {
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _showQuickAddExerciseDialog(context, ref),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        icon: const Icon(Icons.add),
+        label: const Text('New Exercise'),
       ),
     );
   }
