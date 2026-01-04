@@ -1,39 +1,39 @@
-# 📊 Track Bestie - Daily Tracker App
+# Track Bestie - Daily Tracker App
 
 A comprehensive Flutter application for tracking daily habits, fitness activities, meals, and personal goals. Built with modern Flutter architecture and Material Design principles.
 
-## 🌟 Features
+## Features
 
-### 📝 Daily Tracking
+###  Daily Tracking
 - **Habit Tracking**: Create and monitor custom daily habits with visual progress indicators
 - **Quit Habits**: Track progress on breaking unwanted habits with streak counters
 - **Daily Checklist**: Manage daily tasks and to-dos with completion tracking
 - **Custom Trackers**: Add personalized tracking categories for any aspect of your life
 
-### 💪 Fitness & Health
+###  Fitness & Health
 - **Step Counter**: Automatic step tracking using device sensors
 - **Exercise Management**: Create and manage custom workout routines
 - **Workout Timer**: Built-in timer for exercise sessions
 - **Activity Logging**: Track various fitness activities with detailed metrics
 
-### 📈 Analytics & Insights
+###  Analytics & Insights
 - **Visual Reports**: Beautiful charts and graphs showing your progress over time
 - **Heatmaps**: Calendar-based heatmaps for habit consistency visualization
 - **Consistency Tracking**: Bar charts displaying daily, weekly, and monthly trends
 - **Progress Dashboard**: Comprehensive overview of all your tracked activities
 
-### 🔔 Smart Notifications
+### Smart Notifications
 - **Daily Reminders**: Scheduled notifications to keep you on track
 - **Habit Alerts**: Customizable reminders for specific habits
 - **Streak Notifications**: Celebrate your achievements and maintain momentum
 
-### ⚙️ Additional Features
+###  Additional Features
 - **Focus Mode**: Dedicated screen for concentration and productivity tracking
 - **Schedule Management**: Plan and organize your daily activities
 - **Offline Support**: Full functionality without internet connection
 - **Local Data Storage**: All data stored securely on your device using SQLite
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - **Framework**: Flutter 3.0+
 - **State Management**: Riverpod
@@ -43,7 +43,7 @@ A comprehensive Flutter application for tracking daily habits, fitness activitie
 - **Sensors**: Pedometer for step tracking
 - **Permissions**: Permission Handler
 
-## 📱 Screenshots
+##  Screenshots
 
 ### Schedule & Planning
 <div align="center">
@@ -76,7 +76,7 @@ A comprehensive Flutter application for tracking daily habits, fitness activitie
 </div>
 
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - Flutter SDK 3.0.0 or higher
@@ -119,7 +119,7 @@ The release APK will be available at:
 build/app/outputs/flutter-apk/app-release.apk
 ```
 
-## 📂 Project Structure
+##  Project Structure
 
 ```
 lib/
@@ -145,7 +145,7 @@ lib/
     └── widgets/       # Reusable UI components
 ```
 
-## 🔧 Configuration
+##  Configuration
 
 ### Android Permissions
 
@@ -162,7 +162,7 @@ The app uses:
 - **Java Version**: 11
 - **Core Library Desugaring**: Enabled for modern Java APIs
 
-## 🤝 Contributing
+##  Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
@@ -172,21 +172,21 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 👤 Author
+##  Author
 
 **Julien T.**
 - GitHub: [@jlaura19](https://github.com/jlaura19)
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - Flutter team for the amazing framework
 - All open-source contributors whose packages made this app possible
 
-## 📞 Support
+##  Support
 
 If you encounter any issues or have questions, please file an issue on the GitHub repository.
 
